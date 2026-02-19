@@ -39,6 +39,10 @@ class SEOValidationStep:
         self.llm_provider = llm_provider
         self.settings = get_settings()
 
+    def _normalize_for_comparison(self, text: str) -> str:
+        """Normalize text for keyword comparison (handles hyphens, case)."""
+        return text.lower().replace("-", " ")
+
     async def execute(
         self,
         draft_article: str,
@@ -188,11 +192,11 @@ class SEOValidationStep:
             ))
 
         # Keyword in title check
-        topic_lower = topic.lower()
+        topic_normalized = self._normalize_for_comparison(topic)
         title_match = re.search(r"^# (.+)$", article, re.MULTILINE)
         title = title_match.group(1) if title_match else ""
 
-        if topic_lower in title.lower():
+        if topic_normalized in self._normalize_for_comparison(title):
             checks.append(SEOValidationCheck(
                 name="keyword_in_title",
                 passed=True,
@@ -208,8 +212,8 @@ class SEOValidationStep:
             issues.append(f"Include '{topic}' in the H1 title")
 
         # Keyword in first 100 words
-        first_100_words = " ".join(article.split()[:100]).lower()
-        if topic_lower in first_100_words:
+        first_100_words = self._normalize_for_comparison(" ".join(article.split()[:100]))
+        if topic_normalized in first_100_words:
             checks.append(SEOValidationCheck(
                 name="keyword_in_intro",
                 passed=True,
@@ -225,8 +229,8 @@ class SEOValidationStep:
             issues.append(f"Include '{topic}' in the first paragraph")
 
         # Keyword density check
-        article_lower = article.lower()
-        keyword_count = article_lower.count(topic_lower)
+        article_normalized = self._normalize_for_comparison(article)
+        keyword_count = article_normalized.count(topic_normalized)
         keyword_density = keyword_count / word_count if word_count > 0 else 0
 
         if keyword_density <= self.settings.max_keyword_density:
