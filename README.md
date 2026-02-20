@@ -37,7 +37,7 @@ An AI-powered backend service that generates SEO-optimized articles by analyzing
 ┌─────────────────────────┐     ┌─────────────────────────┐
 │     SERP Provider       │     │      LLM Provider       │
 ├─────────────────────────┤     ├─────────────────────────┤
-│  • Serper.dev (real)    │     │  • Groq (Llama 3.3 70B) │
+│  • Serper.dev           │     │  • Groq (Llama 3.3 70B) │
 │  • Mock (testing)       │     │  • Mock (testing)       │
 └─────────────────────────┘     └─────────────────────────┘
 ```
@@ -65,8 +65,8 @@ pip install -r requirements.txt
 cp .env.example .env
 
 # Edit .env with your API keys
-# Get Serper.dev key: https://serper.dev (2,500 free searches)
-# Get Groq key: https://console.groq.com (free tier)
+# Get Serper.dev key: https://serper.dev
+# Get Groq key: https://console.groq.com 
 ```
 
 ### 3. Run the Server
